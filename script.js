@@ -235,7 +235,7 @@ function setupAudio(currentPage) {
         overlay.innerHTML = `
             <div class="overlay-content">
                 <h2>Hola, todo bien? jaja 🎄</h2>
-                <p>Toca en alguna parte de la pantalla cuando estes lista ndeaa<br>
+                <p>Subi el volumen y Toca en alguna parte de la pantalla cuando estes lista ndeaa<br>
                 espero te guste y el regalo tambien. Nos vemos en un rato😉
                 </p>
             </div>
