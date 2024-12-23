@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    setupAudio();
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     
     // Configuración común para todas las páginas
@@ -177,3 +178,101 @@ function setupKeyboardNavigation(currentIndex) {
         }
     });
 }
+let audioContext;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    
+    if (currentPage === 'index.html') {
+        setupInitialAudio();
+    }
+    
+    setupImageEffects();
+    
+    if (currentPage === 'index.html') {
+        createSnowflakes();
+    } else if (currentPage === 'pagina4.html') {
+        createHearts();
+        setupHomeButton();
+    } else if (currentPage === 'pagina3.html') {
+        setupPage3Buttons();
+    }
+
+    if (currentPage !== 'pagina3.html' && currentPage !== 'pagina4.html') {
+        setupNavigation(currentPage);
+    }
+});
+
+let globalAudio = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    
+    setupAudio(currentPage);
+    setupImageEffects();
+    
+    if (currentPage === 'index.html') {
+        createSnowflakes();
+    } else if (currentPage === 'pagina4.html') {
+        createHearts();
+        setupHomeButton();
+    } else if (currentPage === 'pagina3.html') {
+        setupPage3Buttons();
+    }
+
+    if (currentPage !== 'pagina3.html' && currentPage !== 'pagina4.html') {
+        setupNavigation(currentPage);
+    }
+});
+
+function setupAudio(currentPage) {
+    const audio = document.getElementById('musicaNavidad');
+    globalAudio = audio;
+
+    if (currentPage === 'index.html') {
+        const overlay = document.createElement('div');
+        overlay.className = 'audio-overlay';
+        overlay.innerHTML = `
+            <div class="overlay-content">
+                <h2>Hola, todo bien? jaja 🎄</h2>
+                <p>Toca en alguna parte de la pantalla cuando estes lista ndeaa<br>
+                espero te guste y el regalo tambien. Nos vemos en un rato😉
+                </p>
+            </div>
+        `;
+        
+        document.body.appendChild(overlay);
+        
+        overlay.addEventListener('click', () => {
+            audio.play();
+            overlay.remove();
+        });
+    } else {
+        const currentTime = localStorage.getItem('audioTime');
+        if (currentTime) {
+            audio.currentTime = parseFloat(currentTime);
+            audio.play();
+        }
+    }
+
+    const btnMusica = document.createElement('button');
+    btnMusica.innerHTML = '🔊';
+    btnMusica.className = 'control-musica';
+    btnMusica.onclick = () => {
+        if (audio.paused) {
+            audio.play();
+            btnMusica.innerHTML = '🔊';
+        } else {
+            audio.pause();
+            btnMusica.innerHTML = '🔇';
+        }
+    };
+    document.body.appendChild(btnMusica);
+
+    // Guardar tiempo de reproducción antes de cambiar de página
+    window.addEventListener('beforeunload', () => {
+        localStorage.setItem('audioTime', audio.currentTime.toString());
+    });
+}
+
+// El resto del código se mantiene igual...
