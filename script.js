@@ -1,100 +1,113 @@
-// Configuración de páginas
+document.addEventListener('DOMContentLoaded', () => {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    
+    // Configuración común para todas las páginas
+    setupImageEffects();
+    
+    if (currentPage === 'index.html') {
+        createSnowflakes();
+    } else if (currentPage === 'pagina4.html') {
+        createHearts();
+        setupHomeButton();
+    } else if (currentPage === 'pagina3.html') {
+        setupPage3Buttons();
+    }
+
+    // Configurar navegación para todas las páginas excepto 3 y 4
+    if (currentPage !== 'pagina3.html' && currentPage !== 'pagina4.html') {
+        setupNavigation(currentPage);
+    }
+});
+
+function setupPage3Buttons() {
+    const btnUnico = document.getElementById('btnUnico');
+    const btnSecreto = document.getElementById('btnSecreto');
+    
+    if (btnUnico) {
+        btnUnico.addEventListener('click', (e) => {
+            e.preventDefault();
+            transitionToPage('index.html');
+        });
+    }
+    
+    if (btnSecreto) {
+        btnSecreto.addEventListener('click', (e) => {
+            e.preventDefault();
+            transitionToPage('pagina4.html');
+        });
+    }
+}
+
+function setupHomeButton() {
+    const btnVolver = document.getElementById('btnVolver');
+    if (btnVolver) {
+        btnVolver.addEventListener('click', (e) => {
+            e.preventDefault();
+            transitionToPage('index.html');
+        });
+    }
+}
+
+function setupNavigation(currentPage) {
+    const btnAnterior = document.getElementById('btnAnterior');
+    const btnSiguiente = document.getElementById('btnSiguiente');
+    const currentIndex = pages.indexOf(currentPage);
+
+    if (btnAnterior && btnSiguiente) {
+        btnAnterior.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateToPage('prev', currentIndex);
+        });
+
+        btnSiguiente.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateToPage('next', currentIndex);
+        });
+
+        setupKeyboardNavigation(currentIndex);
+    }
+}
+
 const pages = [
     'index.html',
     'pagina2.html',
     'pagina3.html'
 ];
 
-// Función principal que se ejecuta cuando el DOM está cargado
-document.addEventListener('DOMContentLoaded', () => {
-    // Obtener elementos del DOM
-    const btnAnterior = document.getElementById('btnAnterior');
-    const btnSiguiente = document.getElementById('btnSiguiente');
-    
-    // Obtener página actual
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    const currentIndex = pages.indexOf(currentPage);
-
-    // Configurar visibilidad inicial de los botones
-    updateNavigationButtons(currentIndex);
-
-    // Evento para el botón anterior
-    btnAnterior.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigateToPage('prev', currentIndex);
-    });
-
-    // Evento para el botón siguiente
-    btnSiguiente.addEventListener('click', (e) => {
-        e.preventDefault();
-        navigateToPage('next', currentIndex);
-    });
-
-    // Añadir efectos a las imágenes
-    setupImageEffects();
-
-    // Añadir efecto de nieve si es la página principal
-    if (currentPage === 'index.html') {
-        createSnowflakes();
-    }
-
-    // Añadir eventos de teclado para navegación
-    setupKeyboardNavigation(currentIndex);
-});
-
-// Función para actualizar la visibilidad de los botones
-function updateNavigationButtons(currentIndex) {
-    const btnAnterior = document.getElementById('btnAnterior');
-    const btnSiguiente = document.getElementById('btnSiguiente');
-
-    // Mostrar/ocultar botón anterior
-    if (currentIndex === 0) {
-        btnAnterior.style.visibility = 'visible';
-    } else {
-        btnAnterior.style.visibility = 'visible';
-    }
-
-    // Mostrar/ocultar botón siguiente
-    if (currentIndex === pages.length - 1) {
-        btnSiguiente.style.visibility = 'visible';
-    } else {
-        btnSiguiente.style.visibility = 'visible';
-    }
-}
-
-// Función para navegar entre páginas
 function navigateToPage(direction, currentIndex) {
     let newIndex;
     
-    if (direction === 'next' && currentIndex < pages.length - 1) {
-        newIndex = currentIndex + 1;
-    } else if (direction === 'prev' && currentIndex > 0) {
-        newIndex = currentIndex - 1;
+    if (direction === 'next') {
+        newIndex = currentIndex < pages.length - 1 ? currentIndex + 1 : 0;
     } else {
-        return; // No navegar si estamos en los límites
+        newIndex = currentIndex > 0 ? currentIndex - 1 : pages.length - 1;
     }
 
-    // Añadir efecto de transición
+    transitionToPage(pages[newIndex]);
+}
+
+function transitionToPage(page) {
     document.body.style.opacity = '0';
     setTimeout(() => {
-        window.location.href = pages[newIndex];
+        window.location.href = page;
     }, 500);
 }
 
-// Configurar efectos para las imágenes
 function setupImageEffects() {
     const images = document.querySelectorAll('.imagen-galeria');
     
     images.forEach(img => {
-        // Efecto de carga suave
+        img.style.opacity = '0';
         img.addEventListener('load', () => {
-            img.style.opacity = '0';
             setTimeout(() => {
                 img.style.opacity = '1';
             }, 100);
         });
 
-        // Efecto hover táctil
+        if (img.complete) {
+            img.dispatchEvent(new Event('load'));
+        }
+
         if ('ontouchstart' in window) {
             img.addEventListener('touchstart', () => {
                 img.style.transform = 'scale(1.05)';
@@ -106,7 +119,6 @@ function setupImageEffects() {
     });
 }
 
-// Crear efecto de nieve
 function createSnowflakes() {
     const snowflakesCount = window.innerWidth < 768 ? 15 : 30;
     const snowflakes = '❄️✨';
@@ -116,7 +128,6 @@ function createSnowflakes() {
     }
 }
 
-// Crear un copo de nieve individual
 function createSnowflake(snowflakes) {
     const snowflake = document.createElement('div');
     snowflake.className = 'snowflake';
@@ -127,14 +138,36 @@ function createSnowflake(snowflakes) {
     
     document.body.appendChild(snowflake);
 
-    // Eliminar el copo cuando termine la animación
     snowflake.addEventListener('animationend', () => {
         snowflake.remove();
-        createSnowflake(snowflakes); // Crear uno nuevo
+        createSnowflake(snowflakes);
     });
 }
 
-// Configurar navegación por teclado
+function createHearts() {
+    const heartsCount = window.innerWidth < 768 ? 10 : 20;
+    const hearts = '💖💝💗';
+
+    for (let i = 0; i < heartsCount; i++) {
+        createHeart(hearts);
+    }
+}
+
+function createHeart(hearts) {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.style.left = `${Math.random() * 100}vw`;
+    heart.style.animationDuration = `${Math.random() * 3 + 2}s`;
+    heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+    
+    document.body.appendChild(heart);
+
+    heart.addEventListener('animationend', () => {
+        heart.remove();
+        createHeart(hearts);
+    });
+}
+
 function setupKeyboardNavigation(currentIndex) {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
