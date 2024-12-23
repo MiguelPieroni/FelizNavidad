@@ -1,0 +1,160 @@
+/* Variables CSS */
+:root {
+    --color-primary: #d32f2f;
+    --color-secondary: #b71c1c;
+    --color-text: #333;
+    --spacing-base: clamp(10px, 2vw, 20px);
+}
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    color: var(--color-text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-base);
+    transition: opacity 0.5s ease;
+}
+
+/* Contenedor principal */
+.container {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: clamp(20px, 4vw, 40px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: min(95%, 800px);
+    margin: auto;
+}
+
+/* Encabezado */
+.navidad-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+    animation: titleFloat 3s ease-in-out infinite;
+}
+
+.mensaje-navidad {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    line-height: 1.6;
+    color: var(--color-text);
+    margin: 1rem 0;
+}
+
+/* Galería */
+.galeria {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 2rem 0;
+}
+
+.imagen-galeria {
+    width: 100%;
+    height: clamp(200px, 40vw, 300px);
+    object-fit: cover;
+    border-radius: 10px;
+    border: 3px solid var(--color-primary);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+.imagen-galeria:hover {
+    transform: translateY(-5px);
+}
+
+/* Botones */
+.botones-navegacion {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.boton-navidad {
+    background-color: var(--color-primary);
+    color: white;
+    text-decoration: none;
+    padding: clamp(10px, 2vw, 15px) clamp(20px, 4vw, 30px);
+    border-radius: 25px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-align: center;
+    cursor: pointer;
+    min-width: 150px;
+}
+
+.boton-navidad:hover {
+    background-color: var(--color-secondary);
+    transform: scale(1.05);
+}
+
+/* Animaciones */
+@keyframes titleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Efecto nieve */
+.snowflake {
+    position: fixed;
+    color: white;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    user-select: none;
+    z-index: 1;
+    animation: snowfall linear infinite;
+    pointer-events: none;
+}
+
+@keyframes snowfall {
+    0% {
+        transform: translateY(-100vh);
+    }
+    100% {
+        transform: translateY(100vh);
+    }
+}
+
+/* Media Queries */
+@media (max-width: 480px) {
+    .botones-navegacion {
+        flex-direction: column;
+    }
+
+    .boton-navidad {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .galeria {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    .imagen-galeria, 
+    h1, 
+    .boton-navidad,
+    .snowflake {
+        animation: none;
+        transition: none;
+    }
+}
